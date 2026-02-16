@@ -30,6 +30,12 @@
         cursor: pointer; transition: transform 0.3s;
     }
 
+    /* Hiệu ứng khi bao lì xì bị khóa (không chọn) */
+    .lixi-item.disabled {
+        cursor: not-allowed;
+        filter: grayscale(0.5) opacity(0.7);
+    }
+
     .lixi-shell {
         position: absolute; inset: 0;
         background: linear-gradient(135deg, #c40000, #7a0000);
@@ -146,14 +152,23 @@
     </div>
 
     <script>
-        function handleLixi(el) {
-            const isActive = el.classList.contains('active');
-            document.querySelectorAll('.lixi-item').forEach(i => i.classList.remove('active'));
+        let isLixiOpened = false; // Biến kiểm tra đã mở lì xì chưa
 
-            if (!isActive) {
-                el.classList.add('active');
-                triggerCelebration();
-            }
+        function handleLixi(el) {
+            // Nếu đã mở một cái rồi thì không cho nhấn cái khác
+            if (isLixiOpened) return;
+
+            isLixiOpened = true; // Đánh dấu đã mở
+            el.classList.add('active');
+            
+            // Làm mờ các bao lì xì còn lại
+            document.querySelectorAll('.lixi-item').forEach(item => {
+                if (item !== el) {
+                    item.classList.add('disabled');
+                }
+            });
+
+            triggerCelebration();
         }
 
         function handleEnvelope(el) {
@@ -162,21 +177,20 @@
             if (!isOpen) triggerCelebration();
         }
 
-        // Hàm kích hoạt combo hoa + pháo nổ ngẫu nhiên
         function triggerCelebration() {
             createFlowers();
-            // Nổ pháo ở 5 vị trí ngẫu nhiên trên màn hình
-            for(let i = 0; i < 5; i++) {
+            // Nổ pháo ở 8 vị trí ngẫu nhiên cho rộn ràng
+            for(let i = 0; i < 8; i++) {
                 setTimeout(() => {
                     const randomX = Math.random() * window.innerWidth;
                     const randomY = Math.random() * window.innerHeight;
                     createFirework(randomX, randomY);
-                }, i * 200); 
+                }, i * 150); 
             }
         }
 
         function createFlowers() {
-            for(let i=0; i<20; i++) {
+            for(let i=0; i<25; i++) {
                 setTimeout(() => {
                     const f = document.createElement('div');
                     f.className = 'flower';
@@ -185,13 +199,13 @@
                     f.style.animationDuration = (Math.random() * 3 + 2) + 's';
                     document.body.appendChild(f);
                     setTimeout(() => f.remove(), 5000);
-                }, i * 100);
+                }, i * 80);
             }
         }
 
         function createFirework(x, y) {
             const colors = ['#ff5252', '#ffd54f', '#69f0ae', '#40c4ff', '#ff4081', '#ffffff'];
-            const count = 25;
+            const count = 30;
             for (let i = 0; i < count; i++) {
                 const s = document.createElement('div');
                 s.className = 'spark';
@@ -199,7 +213,7 @@
                 s.style.left = x + 'px';
                 s.style.top = y + 'px';
                 const angle = (Math.PI * 2 * i) / count;
-                const distance = Math.random() * 120 + 60;
+                const distance = Math.random() * 150 + 50;
                 s.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
                 s.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
                 document.body.appendChild(s);
