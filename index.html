@@ -14,11 +14,11 @@
         background: radial-gradient(circle at center, #5a0000, #200000);
         font-family: system-ui, -apple-system, sans-serif;
         display: flex; flex-direction: column; align-items: center;
-        justify-content: space-evenly; /* Tự động chia không gian để không đè nhau */
+        justify-content: space-evenly;
         overflow: hidden; touch-action: manipulation;
     }
 
-    /* ================= AREA 1: LÌ XÌ (FLEX BOX) ================= */
+    /* ================= AREA 1: LÌ XÌ ================= */
     .lixi-container {
         display: flex; justify-content: center; gap: 15px;
         width: 100%; padding: 20px; box-sizing: border-box;
@@ -45,19 +45,17 @@
         display: flex; align-items: center; justify-content: center;
         font-size: 11px; font-weight: bold; color: #333;
         transform: translateY(0); transition: 0.4s cubic-bezier(.18,.89,.32,1.28);
-        z-index: 1;
+        z-index: 1; text-align: center; padding: 5px;
     }
 
-    .lixi-item.active .money { transform: translateY(-50px); z-index: 3; }
-    .lixi-item.active { transform: scale(1.05); }
+    .lixi-item.active .money { transform: translateY(-55px); z-index: 3; }
 
-    /* Màu sắc tiền */
     .m500 { background: #00838f; color: white; }
     .m200 { background: #bf360c; color: white; }
     .m100 { background: #2e7d32; color: white; }
     .mtrip { background: #ef6c00; color: white; }
 
-    /* ================= AREA 2: BÌ THƯ (RESPONSIVE) ================= */
+    /* ================= AREA 2: BÌ THƯ ================= */
     .envelope-box {
         position: relative; width: 90%; max-width: 350px;
         aspect-ratio: 3/2; z-index: 5;
@@ -66,7 +64,7 @@
     .envelope {
         position: relative; width: 100%; height: 100%;
         background: var(--red); border: 2px solid var(--gold);
-        cursor: pointer; transition: 0.3s;
+        cursor: pointer;
     }
 
     .flap {
@@ -81,7 +79,7 @@
         position: absolute; bottom: 5px; left: 5%; width: 90%; height: 90%;
         background: var(--paper); padding: 15px; box-sizing: border-box;
         border-radius: 4px; text-align: center; transition: 0.6s;
-        z-index: 2; /* Nằm dưới túi */
+        z-index: 2;
     }
 
     .open .letter { transform: translateY(-50%); z-index: 5; }
@@ -91,78 +89,130 @@
         z-index: 3; pointer-events: none; border-top: 1px solid #7a0000;
     }
 
-    h2 { font-size: 1.2rem; color: #b30000; margin: 0; }
-    p { font-size: 0.9rem; margin: 5px 0; }
+    p { font-size: 0.85rem; margin: 8px 0; color: #333; line-height: 1.4; }
 
-    /* Pháo hoa & Hoa mai */
-    .flower { position: fixed; top: -50px; animation: fall linear forwards; pointer-events: none; }
-    @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+    /* ================= HIỆU ỨNG CHUNG ================= */
+    .flower {
+        position: fixed; top: -50px; font-size: 20px;
+        animation: fall linear forwards; pointer-events: none; z-index: 99;
+    }
+    @keyframes fall {
+        to { transform: translateY(110vh) rotate(360deg); }
+    }
+
+    .spark {
+        position: fixed; width: 5px; height: 5px; border-radius: 50%;
+        pointer-events: none; z-index: 100;
+        animation: explode 0.8s ease-out forwards;
+    }
+    @keyframes explode {
+        0% { transform: translate(0, 0); opacity: 1; }
+        100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
+    }
 </style>
 </head>
 <body>
 
     <div class="lixi-container">
-        <div class="lixi-item" onclick="toggleLixi(this)">
+        <div class="lixi-item" onclick="handleLixi(this, event)">
             <div class="money m500">500k 🧧</div>
             <div class="lixi-shell">LÌ XÌ</div>
         </div>
-        <div class="lixi-item" onclick="toggleLixi(this)">
+        <div class="lixi-item" onclick="handleLixi(this, event)">
             <div class="money m200">200k 🧧</div>
             <div class="lixi-shell">LÌ XÌ</div>
         </div>
-        <div class="lixi-item" onclick="toggleLixi(this)">
+        <div class="lixi-item" onclick="handleLixi(this, event)">
             <div class="money m100">100k 🧧</div>
             <div class="lixi-shell">LÌ XÌ</div>
         </div>
-        <div class="lixi-item" onclick="toggleLixi(this)">
-            <div class="money mtrip"> Đi chơi tết </div>
+        <div class="lixi-item" onclick="handleLixi(this, event)">
+            <div class="money mtrip">Đi chơi tết ✈️</div>
             <div class="lixi-shell">LÌ XÌ</div>
         </div>
     </div>
 
     <div class="envelope-box" id="envBox">
-        <div class="envelope" onclick="openEnv(this)">
+        <div class="envelope" onclick="handleEnvelope(this, event)">
             <div class="flap"></div>
             <div class="letter">
-                            <p>Chúc <b>em Zing</b> năm mới nhiều sức khỏe,</p>
-            <p>
-                Học hành thuận lợi , đạt được mục tiêu mà Zing đề ra
-            </p>
-            <p>Ba mẹ sức khỏe dồi dào và thương Zing nha</p>
-            <p>Có gì mệt hay có chuyện không zui thì cứ nói với anh Bợm  ❤️</p>
+                <p>Chúc <b>em Zing</b> năm mới nhiều sức khỏe,</p>
+                <p>Học hành thuận lợi, đạt được mục tiêu mà Zing đề ra</p>
+                <p>Ba mẹ sức khỏe dồi dào và thương Zing nha</p>
+                <p>Có gì mệt hay không zui thì cứ nói với anh Bợm ❤️</p>
             </div>
             <div class="pocket"></div>
         </div>
     </div>
 
     <script>
-        function toggleLixi(el) {
+        // Hàm xử lý chung cho lì xì
+        function handleLixi(el, e) {
+            const isActive = el.classList.contains('active');
+            
+            // Đóng các bao khác
             document.querySelectorAll('.lixi-item').forEach(item => {
-                if(item !== el) item.classList.remove('active');
+                item.classList.remove('active');
             });
-            el.classList.toggle('active');
+
+            if (!isActive) {
+                el.classList.add('active');
+                createFirework(e.clientX, e.clientY); // Pháo hoa ngay vị trí click
+                createFlowers(); // Hoa rơi
+            }
         }
 
-        let isOpened = false;
-        function openEnv(el) {
+        // Hàm xử lý cho bì thư
+        function handleEnvelope(el, e) {
+            const isOpen = el.classList.contains('open');
             el.classList.toggle('open');
-            if(!isOpened) {
-                isOpened = true;
+            
+            if (!isOpen) {
+                createFirework(e.clientX, e.clientY);
                 createFlowers();
             }
         }
 
+        // Tạo hiệu ứng hoa mai rơi
         function createFlowers() {
-            for(let i=0; i<50; i++) {
+            for(let i=0; i<15; i++) { // Mỗi lần tương tác rơi thêm 15 bông
                 setTimeout(() => {
                     const f = document.createElement('div');
                     f.className = 'flower';
-                    f.innerHTML = '🌸';
+                    f.innerHTML = Math.random() > 0.5 ? '🌸' : '🌼';
                     f.style.left = Math.random() * 100 + 'vw';
+                    f.style.fontSize = (Math.random() * 10 + 15) + 'px';
                     f.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    f.style.opacity = Math.random();
                     document.body.appendChild(f);
                     setTimeout(() => f.remove(), 5000);
                 }, i * 100);
+            }
+        }
+
+        // Tạo hiệu ứng pháo hoa nổ
+        function createFirework(x, y) {
+            const colors = ['#ff5252', '#ffd54f', '#69f0ae', '#40c4ff', '#ff4081', '#ffffff'];
+            const count = 30; // Số lượng hạt pháo
+            
+            for (let i = 0; i < count; i++) {
+                const s = document.createElement('div');
+                s.className = 'spark';
+                s.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                s.style.left = x + 'px';
+                s.style.top = y + 'px';
+                
+                // Tính toán hướng nổ ngẫu nhiên theo hình tròn
+                const angle = (Math.PI * 2 * i) / count;
+                const distance = Math.random() * 100 + 50;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                s.style.setProperty('--tx', `${tx}px`);
+                s.style.setProperty('--ty', `${ty}px`);
+                
+                document.body.appendChild(s);
+                setTimeout(() => s.remove(), 800);
             }
         }
     </script>
